@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   Users, DollarSign, TrendingUp, UserPlus,
-  Eye, CreditCard, BarChart3, Activity, ArrowRight, PieChart, GraduationCap, Shield
+  CreditCard, BarChart3, Activity, PieChart, GraduationCap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   getStudentStats,
-  getCourseDistribution,
   getRecentStudents,
   getRecentPayments,
   getUserAnalytics
@@ -44,9 +43,96 @@ export const DashboardPage = () => {
   const [recentStudents, setRecentStudents] = useState<RecentActivity[]>([]);
   const [recentPayments, setRecentPayments] = useState<RecentActivity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isChartVisible, setIsChartVisible] = useState(false);
+  const [isStaffVisible, setIsStaffVisible] = useState(false);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const staffRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchDashboardData();
+    // Trigger animation after component mounts
+    setTimeout(() => setIsVisible(true), 100);
+
+
+  }, []);
+
+  useEffect(() => {
+    let hasTriggered = false;
+
+    // Delay to ensure DOM is ready
+    const setupObserver = () => {
+      const currentRef = chartRef.current;
+
+      if (!currentRef) {
+        setTimeout(setupObserver, 100);
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !hasTriggered) {
+              hasTriggered = true;
+              setTimeout(() => {
+                setIsChartVisible(true);
+              }, 300);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px' }
+      );
+
+      observer.observe(currentRef);
+
+      return () => {
+        observer.unobserve(currentRef);
+      };
+    };
+
+    const cleanup = setupObserver();
+    return cleanup;
+  }, []);
+
+  useEffect(() => {
+    let hasTriggered = false;
+
+    // Delay to ensure DOM is ready
+    const setupObserver = () => {
+      const currentRef = staffRef.current;
+      console.log('Staff observer setup, ref exists:', !!currentRef);
+
+      if (!currentRef) {
+        console.log('Ref not ready, retrying...');
+        setTimeout(setupObserver, 100);
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            console.log('Staff intersection:', entry.isIntersecting, 'hasTriggered:', hasTriggered);
+            if (entry.isIntersecting && !hasTriggered) {
+              hasTriggered = true;
+              console.log('Setting staff visible to TRUE');
+              setTimeout(() => {
+                setIsStaffVisible(true);
+              }, 300);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: '0px' }
+      );
+
+      observer.observe(currentRef);
+
+      return () => {
+        observer.unobserve(currentRef);
+      };
+    };
+
+    const cleanup = setupObserver();
+    return cleanup;
   }, []);
 
   const fetchDashboardData = async () => {
@@ -98,154 +184,217 @@ export const DashboardPage = () => {
 
   return (
     <div className="space-y-10 animate-fade-in pb-12">
-      <div>
-        <h1 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Dashboard</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Overview of system performance and analytics
-        </p>
-      </div>
-
-
 
       {/* Daily Operations Summary */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-            Today's Operations
-          </h3>
-          <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-1 rounded-full">
-            {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2 mb-2">
-              <UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400 animate-wiggle" />
-              <span className="text-sm font-medium text-blue-800 dark:text-blue-300">Today's Registrations</span>
+      <div id="operations" className="scroll-mt-32 mt-4">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+            <div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                Today's Operations
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className={`relative overflow-hidden bg-transparent rounded-lg p-5 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg hover:scale-105 hover:-translate-y-2 transition-all duration-[525ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}>
+            <div className="flex items-start justify-between mb-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-150">
+                <UserPlus className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Today</span>
+            </div>
+            <p className="text-3xl font-bold text-gray-800 dark:text-white mb-1">
               {userAnalytics.reduce((sum, user) => sum + user.registeredToday, 0)}
             </p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">New students registered</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Registrations</p>
           </div>
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-            <div className="flex items-center gap-2 mb-2">
-              <DollarSign className="w-4 h-4 text-green-600 dark:text-green-400 animate-wiggle animation-delay-100" />
-              <span className="text-sm font-medium text-green-800 dark:text-green-300">Today's Revenue</span>
+          <div className={`relative overflow-hidden bg-transparent rounded-lg p-5 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg hover:scale-105 hover:-translate-y-2 transition-all duration-[525ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}>
+            <div className="flex items-start justify-between mb-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-150">
+                <DollarSign className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Today</span>
             </div>
-            <p className="text-2xl font-bold text-green-900 dark:text-green-100">
+            <p className="text-3xl font-bold text-gray-800 dark:text-white mb-1">
               GH₵ {userAnalytics.reduce((sum, user) => sum + user.revenueToday, 0).toLocaleString()}
             </p>
-            <p className="text-xs text-green-600 dark:text-green-400">Payments collected</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Revenue</p>
           </div>
-          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-4 h-4 text-purple-600 dark:text-purple-400 animate-wiggle animation-delay-200" />
-              <span className="text-sm font-medium text-purple-800 dark:text-purple-300">This Week</span>
+          <div className={`relative overflow-hidden bg-transparent rounded-lg p-5 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg hover:scale-105 hover:-translate-y-2 transition-all duration-[525ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
+            <div className="flex items-start justify-between mb-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-150">
+                <Users className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Week</span>
             </div>
-            <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">
+            <p className="text-3xl font-bold text-gray-800 dark:text-white mb-1">
               {userAnalytics.reduce((sum, user) => sum + user.registeredThisWeek, 0)}
             </p>
-            <p className="text-xs text-purple-600 dark:text-purple-400">Weekly registrations</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Weekly Total</p>
           </div>
-          <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="w-4 h-4 text-orange-600 dark:text-orange-400 animate-wiggle animation-delay-300" />
-              <span className="text-sm font-medium text-orange-800 dark:text-orange-300">Staff Online</span>
+          <div className={`relative overflow-hidden bg-transparent rounded-lg p-5 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg hover:scale-105 hover:-translate-y-2 transition-all duration-[525ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
+            <div className="flex items-start justify-between mb-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-150">
+                <Activity className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Now</span>
             </div>
-            <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">{stats.activeUsers}</p>
-            <p className="text-xs text-orange-600 dark:text-orange-400">Currently working</p>
+            <p className="text-3xl font-bold text-gray-800 dark:text-white mb-1">{stats.activeUsers}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Staff Online</p>
           </div>
         </div>
       </div>
 
       {/* Course Distribution Analytics */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded flex items-center justify-center">
-            <PieChart className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+      <div id="courses" ref={chartRef} className="rounded-lg p-4 scroll-mt-32 border-t-2 border-gray-300 dark:border-gray-600">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+            <PieChart className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </div>
-          <h3 className="text-base font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white">
             Course Distribution Analytics
           </h3>
-          <span className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-1 rounded-full">
+          <span className="text-sm bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-full font-medium">
             Live Data
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Course Statistics */}
-          <div className="space-y-3">
+        <div className="space-y-4 md:space-y-0">
+          {/* Mobile View - Card Layout */}
+          <div className="md:hidden space-y-4">
             {[
-              { course: 'Computer Science', students: 298, percentage: 23.9, color: 'bg-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-900/20', borderColor: 'border-blue-200 dark:border-blue-800', textColor: 'text-blue-600 dark:text-blue-400' },
-              { course: 'Information Technology', students: 245, percentage: 19.6, color: 'bg-green-500', bgColor: 'bg-green-50 dark:bg-green-900/20', borderColor: 'border-green-200 dark:border-green-800', textColor: 'text-green-600 dark:text-green-400' },
-              { course: 'Mathematical Science', students: 187, percentage: 15.0, color: 'bg-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-900/20', borderColor: 'border-purple-200 dark:border-purple-800', textColor: 'text-purple-600 dark:text-purple-400' },
-              { course: 'Physical Science', students: 156, percentage: 12.5, color: 'bg-orange-500', bgColor: 'bg-orange-50 dark:bg-orange-900/20', borderColor: 'border-orange-200 dark:border-orange-800', textColor: 'text-orange-600 dark:text-orange-400' },
-              { course: 'Actuarial Science', students: 142, percentage: 11.4, color: 'bg-teal-500', bgColor: 'bg-teal-50 dark:bg-teal-900/20', borderColor: 'border-teal-200 dark:border-teal-800', textColor: 'text-teal-600 dark:text-teal-400' },
-              { course: 'Education', students: 124, percentage: 9.9, color: 'bg-indigo-500', bgColor: 'bg-indigo-50 dark:bg-indigo-900/20', borderColor: 'border-indigo-200 dark:border-indigo-800', textColor: 'text-indigo-600 dark:text-indigo-400' },
-              { course: 'Allied Health', students: 95, percentage: 7.6, color: 'bg-red-500', bgColor: 'bg-red-50 dark:bg-red-900/20', borderColor: 'border-red-200 dark:border-red-800', textColor: 'text-red-600 dark:text-red-400' }
-            ].map((item, index) => (
-              <div key={item.course} className={`flex items-center justify-between p-3 ${item.bgColor} rounded-lg border ${item.borderColor} hover:shadow-md transition-all duration-300 transform hover:scale-102`}>
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 ${item.color} rounded-full flex items-center justify-center`}>
-                    <GraduationCap className="w-2 h-2 text-white" />
+              { course: 'Computer Science', students: 298, percentage: 23.9, color: 'bg-cyan-600', rank: 1 },
+              { course: 'Information Technology', students: 245, percentage: 19.6, color: 'bg-emerald-600', rank: 2 },
+              { course: 'Mathematical Science', students: 187, percentage: 15.0, color: 'bg-blue-600', rank: 3 },
+              { course: 'Physical Science', students: 156, percentage: 12.5, color: 'bg-cyan-600', rank: 4 },
+              { course: 'Actuarial Science', students: 142, percentage: 11.4, color: 'bg-teal-700', rank: 5 },
+              { course: 'Education', students: 124, percentage: 9.9, color: 'bg-indigo-600', rank: 6 },
+              { course: 'Allied Health', students: 95, percentage: 7.6, color: 'bg-cyan-600', rank: 7 }
+            ].map((item) => (
+              <div key={item.course} className="bg-gray-100 dark:bg-gray-700/30 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{item.rank}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 ${item.color} rounded-full`}></div>
+                      <span className="text-base font-bold text-gray-800 dark:text-white">{item.course}</span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-800 dark:text-white">{item.course}</h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{item.students} students</p>
-                  </div>
+                  <span className="text-lg font-bold text-gray-800 dark:text-white">{item.students.toLocaleString()}</span>
                 </div>
-                <div className="text-right">
-                  <p className={`text-lg font-bold ${item.textColor}`}>{item.percentage}%</p>
-                  <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-1">
-                    <div
-                      className={`${item.color} h-1.5 rounded-full transition-all duration-1000 ease-out`}
-                      style={{ width: `${item.percentage}%` }}
-                    ></div>
+                <div className="w-full h-8 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+                  <div
+                    className={`${item.color} h-full transition-all duration-[1500ms] ease-out flex items-center justify-end pr-2`}
+                    style={{ width: isChartVisible ? `${(item.students / 298) * 100}%` : '0%' }}
+                  >
+                    {isChartVisible && (
+                      <span className="text-sm font-bold text-white animate-fade-in">{item.percentage}%</span>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
+            <div className="bg-gray-100 dark:bg-gray-700/30 rounded-lg p-4 border-2 border-gray-300 dark:border-gray-600">
+              <div className="flex items-center justify-between">
+                <span className="text-base font-bold text-gray-800 dark:text-white">Total Enrollment</span>
+                <span className="text-xl font-extrabold text-gray-800 dark:text-white">{stats.totalStudents.toLocaleString()}</span>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">7 Programs</p>
+            </div>
           </div>
 
-          {/* Visual Chart Representation */}
-          <div className="flex flex-col items-center justify-center">
-            <div className="relative w-48 h-48 mb-4">
-              {/* Simple Donut Chart using CSS */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-green-500 via-purple-500 via-orange-500 via-teal-500 to-red-500 animate-spin" style={{ animationDuration: '10s' }}></div>
-              <div className="absolute inset-4 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">{stats.totalStudents.toLocaleString()}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Total Students</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-center">
-              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2 border border-blue-200 dark:border-blue-800">
-                <p className="text-sm font-bold text-blue-600 dark:text-blue-400">7</p>
-                <p className="text-xs text-blue-600 dark:text-blue-400">Programs</p>
-              </div>
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-2 border border-green-200 dark:border-green-800">
-                <p className="text-sm font-bold text-green-600 dark:text-green-400">CS</p>
-                <p className="text-xs text-green-600 dark:text-green-400">Top Course</p>
-              </div>
-            </div>
+          {/* Desktop View - Table Layout */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '25%' }} />
+                <col style={{ width: '40%' }} />
+              </colgroup>
+              <thead>
+                <tr className="border-b-2 border-gray-300 dark:border-gray-600">
+                  <th className="text-left py-3 px-4 text-base font-bold text-gray-700 dark:text-gray-300">Rank</th>
+                  <th className="text-left py-3 px-4 text-base font-bold text-gray-700 dark:text-gray-300">Program</th>
+                  <th className="text-center py-3 px-4 text-base font-bold text-gray-700 dark:text-gray-300">Students</th>
+                  <th className="text-left py-3 px-4 text-base font-bold text-gray-700 dark:text-gray-300">Enrollment Chart</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { course: 'Computer Science', students: 298, percentage: 23.9, color: 'bg-cyan-600', rank: 1 },
+                  { course: 'Information Technology', students: 245, percentage: 19.6, color: 'bg-emerald-600', rank: 2 },
+                  { course: 'Mathematical Science', students: 187, percentage: 15.0, color: 'bg-blue-600', rank: 3 },
+                  { course: 'Physical Science', students: 156, percentage: 12.5, color: 'bg-cyan-600', rank: 4 },
+                  { course: 'Actuarial Science', students: 142, percentage: 11.4, color: 'bg-teal-700', rank: 5 },
+                  { course: 'Education', students: 124, percentage: 9.9, color: 'bg-indigo-600', rank: 6 },
+                  { course: 'Allied Health', students: 95, percentage: 7.6, color: 'bg-cyan-600', rank: 7 }
+                ].map((item, index) => (
+                  <tr
+                    key={item.course}
+                    className={`border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700/30 transition-colors ${index === 0 ? 'bg-gray-50 dark:bg-gray-800/20' : ''}`}
+                  >
+                    <td className="py-4 px-4">
+                      <div className="w-8 h-8 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center">
+                        <span className="text-base font-bold text-gray-700 dark:text-gray-300">{item.rank}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 ${item.color} rounded-full`}></div>
+                        <span className="text-base font-bold text-gray-800 dark:text-white">{item.course}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 text-center">
+                      <span className="text-lg font-bold text-gray-800 dark:text-white">{item.students.toLocaleString()}</span>
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <div className="w-full h-8 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+                            <div
+                              className={`${item.color} h-full transition-all duration-[1500ms] ease-out flex items-center justify-end pr-2`}
+                              style={{ width: isChartVisible ? `${(item.students / 298) * 100}%` : '0%' }}
+                            >
+                              {isChartVisible && (
+                                <span className="text-sm font-bold text-white animate-fade-in">{item.percentage}%</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-t-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700/30 font-bold">
+                  <td className="py-4 px-4"></td>
+                  <td className="py-4 px-4 text-base font-bold text-gray-800 dark:text-white">Total Enrollment</td>
+                  <td className="py-4 px-4 text-center text-xl font-extrabold text-gray-800 dark:text-white">{stats.totalStudents.toLocaleString()}</td>
+                  <td className="py-4 px-4 text-base text-gray-600 dark:text-gray-400">7 Programs</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <div className="mt-4 pt-4 border-t-2 border-gray-300 dark:border-gray-600">
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-center gap-4 md:gap-8">
+            <div className="flex items-center gap-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span>Updated in real-time</span>
             </div>
             <Link
               to="/students"
-              className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200 font-medium transition-colors duration-300"
+              className="text-sm md:text-base text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-medium transition-colors duration-150"
             >
               View All Students →
             </Link>
@@ -253,148 +402,179 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 group">
-          <div className="flex items-center justify-between mb-4">
+      <div id="performance" className="grid grid-cols-1 lg:grid-cols-3 gap-6 scroll-mt-32">
+        <div ref={staffRef} className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-blue-500" />
-              <h2 className="text-base font-bold text-gray-800 dark:text-white">Staff Performance</h2>
+              <BarChart3 className="w-5 h-5 text-blue-500" />
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">Staff Performance</h2>
             </div>
-            <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-2 py-1 rounded-full group-hover:animate-pulse">
+            <span className="text-sm bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 px-3 py-1.5 rounded-full">
               Live Data
             </span>
           </div>
-          <div className="space-y-4">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {userAnalytics.slice(0, 2).map((user, index) => {
-              const dailyTarget = 8; // Target registrations per day
-              const weeklyTarget = 40; // Target registrations per week
+              const dailyTarget = 8;
+              const weeklyTarget = 40;
               const dailyProgress = (user.registeredToday / dailyTarget) * 100;
               const weeklyProgress = (user.registeredThisWeek / weeklyTarget) * 100;
+              const circumference = 2 * Math.PI * 45;
+              // strokeDashoffset: circumference = 0% filled, 0 = 100% filled
+              // When not visible: show 0% (offset = circumference)
+              // When visible: show actual % (offset = circumference - progress)
+              const dailyOffset = isStaffVisible ? (circumference - (dailyProgress / 100) * circumference) : circumference;
+              const weeklyOffset = isStaffVisible ? (circumference - (weeklyProgress / 100) * circumference) : circumference;
 
               return (
                 <div
                   key={user.user_id}
-                  className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-md hover:scale-102 transition-all duration-300 group/card"
+                  className="relative bg-gradient-to-br from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800/30 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-2xl transition-all duration-150 overflow-hidden"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
-                      {user.full_name}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full group-hover/card:animate-pulse ${index === 0 ? 'bg-green-500' : 'bg-blue-500'}`}></div>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {index === 0 ? 'Admin' : 'Clerk'}
-                      </span>
+                  {/* Header */}
+                  <div className="relative flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-14 h-14 rounded-full flex items-center justify-center font-bold text-white text-lg shadow-lg bg-gradient-to-br from-green-500 to-emerald-600">
+                        {user.full_name.split(' ').map(n => n[0]).join('')}
+                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-800 dark:text-white text-base">{user.full_name}</h3>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                          {index === 0 ? 'Admin' : 'Clerk'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className={`px-3 py-1.5 rounded-lg text-xs font-bold ${dailyProgress >= 75 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : dailyProgress >= 50 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'}`}>
+                      {dailyProgress >= 75 ? 'Top' : dailyProgress >= 50 ? 'Good' : 'Growing'}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">Today's Work</span>
-                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                          {user.registeredToday}/{dailyTarget}
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-                        <div
-                          className={`h-2 rounded-full transition-all duration-1000 group-hover/card:animate-pulse group-hover/card:shadow-lg ${dailyProgress >= 100 ? 'bg-green-500' :
-                            dailyProgress >= 75 ? 'bg-blue-500' :
-                              dailyProgress >= 50 ? 'bg-yellow-500' : 'bg-orange-500'
-                            }`}
-                          style={{ width: `${Math.min(dailyProgress, 100)}%` }}
-                        ></div>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">Revenue</span>
-                        <span className="font-bold text-green-600 dark:text-green-400">
-                          GH₵ {user.revenueToday.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">This Week</span>
-                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                          {user.registeredThisWeek}/{weeklyTarget}
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
-                        <div
-                          className={`h-2 rounded-full transition-all duration-1000 group-hover/card:animate-pulse group-hover/card:shadow-lg ${weeklyProgress >= 100 ? 'bg-green-500' :
-                            weeklyProgress >= 75 ? 'bg-blue-500' :
-                              weeklyProgress >= 50 ? 'bg-yellow-500' : 'bg-orange-500'
-                            }`}
-                          style={{ width: `${Math.min(weeklyProgress, 100)}%` }}
-                        ></div>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">Avg/Day</span>
-                        <span className="font-medium text-gray-700 dark:text-gray-300">
-                          {Math.round(user.registeredThisWeek / 7 * 10) / 10}
-                        </span>
+                  {/* Circular Progress Indicators */}
+                  <div className="flex justify-around mb-6">
+                    {/* Daily Progress Circle */}
+                    <div className="relative">
+                      <svg className="transform -rotate-90" width="100" height="100">
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          fill="none"
+                          className="text-gray-200 dark:text-gray-700"
+                        />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          fill="none"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={dailyOffset}
+                          className={`transition-all duration-1000 ${dailyProgress >= 100 ? 'text-green-500' : dailyProgress >= 75 ? 'text-blue-500' : dailyProgress >= 50 ? 'text-yellow-500' : 'text-orange-500'}`}
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <div className="text-2xl font-extrabold text-gray-800 dark:text-white">{isStaffVisible ? Math.round(dailyProgress) : 0}%</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Daily</div>
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-gray-400">Status</span>
-                        <span className={`font-medium ${dailyProgress >= 75 ? 'text-green-600 dark:text-green-400' :
-                          dailyProgress >= 50 ? 'text-blue-600 dark:text-blue-400' :
-                            'text-orange-600 dark:text-orange-400'
-                          }`}>
-                          {dailyProgress >= 75 ? 'Excellent' :
-                            dailyProgress >= 50 ? 'Good' : 'Needs Focus'}
-                        </span>
-                      </div>
-                      <div className="text-center">
-                        <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${index === 0 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-                          'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                          }`}>
-                          {index === 0 ? '🟢 Online' : '🔵 Active'}
-                        </div>
-                      </div>
-                      <div className="text-center text-xs text-gray-500 dark:text-gray-400">
-                        Last activity: {Math.floor(Math.random() * 10) + 1}m ago
+                    {/* Weekly Progress Circle */}
+                    <div className="relative">
+                      <svg className="transform -rotate-90" width="100" height="100">
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          fill="none"
+                          className="text-gray-200 dark:text-gray-700"
+                        />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          stroke="currentColor"
+                          strokeWidth="8"
+                          fill="none"
+                          strokeDasharray={circumference}
+                          strokeDashoffset={weeklyOffset}
+                          className={`transition-all duration-1000 ${weeklyProgress >= 100 ? 'text-green-500' : weeklyProgress >= 75 ? 'text-blue-500' : weeklyProgress >= 50 ? 'text-yellow-500' : 'text-orange-500'}`}
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <div className="text-2xl font-extrabold text-gray-800 dark:text-white">{isStaffVisible ? Math.round(weeklyProgress) : 0}%</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Weekly</div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 text-center border border-gray-200 dark:border-gray-700">
+                      <div className="text-2xl font-bold text-gray-800 dark:text-white">{user.registeredToday}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Today</div>
+                      <div className="text-xs text-gray-400 dark:text-gray-500">/{dailyTarget}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-3 text-center border border-green-200 dark:border-green-800">
+                      <div className="text-lg font-bold text-green-600 dark:text-green-400">GH₵{user.revenueToday.toLocaleString()}</div>
+                      <div className="text-xs text-green-600 dark:text-green-400 mt-1">Revenue</div>
+                      <div className="text-xs text-green-500 dark:text-green-500">Today</div>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 text-center border border-gray-200 dark:border-gray-700">
+                      <div className="text-2xl font-bold text-gray-800 dark:text-white">{user.registeredThisWeek}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Week</div>
+                      <div className="text-xs text-gray-400 dark:text-gray-500">/{weeklyTarget}</div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs">
+                    <span className="text-gray-500 dark:text-gray-400">Avg: {Math.round(user.registeredThisWeek / 7 * 10) / 10}/day</span>
+                    <span className="text-gray-400 dark:text-gray-500">Last: {Math.floor(Math.random() * 10) + 1}m ago</span>
                   </div>
                 </div>
               );
             })}
           </div>
-          <div className="mt-4 text-center">
+          <div className="mt-6 text-center">
             <Link
               to="/users"
-              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-medium"
+              className="text-base text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-medium"
             >
               View More Staff →
             </Link>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="lg:col-span-1 space-y-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-2 mb-3">
-              <UserPlus className="w-4 h-4 text-green-500" />
-              <h2 className="text-base font-bold text-gray-800 dark:text-white">Recent Students</h2>
+              <UserPlus className="w-5 h-5 text-green-500" />
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">Recent Students</h2>
             </div>
             <div className="space-y-2">
-              {recentStudents.slice(0, 2).map((student) => (
+              {recentStudents.slice(0, 3).map((student) => (
                 <div
                   key={student.id}
                   className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-900/50 rounded"
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                       {student.name.charAt(0)}
                     </div>
-                    <span className="text-xs font-medium text-gray-800 dark:text-white">
+                    <span className="text-sm font-medium text-gray-800 dark:text-white">
                       {student.name}
                     </span>
                   </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
                     {new Date(student.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
@@ -403,7 +583,7 @@ export const DashboardPage = () => {
             <div className="mt-4 text-center">
               <Link
                 to="/students"
-                className="text-sm text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200 font-medium"
+                className="text-base text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200 font-medium"
               >
                 View More Students →
               </Link>
@@ -412,8 +592,8 @@ export const DashboardPage = () => {
 
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center gap-2 mb-3">
-              <CreditCard className="w-4 h-4 text-blue-500" />
-              <h2 className="text-base font-bold text-gray-800 dark:text-white">Recent Payments</h2>
+              <CreditCard className="w-5 h-5 text-blue-500" />
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">Recent Payments</h2>
             </div>
             <div className="space-y-2">
               {recentPayments.slice(0, 2).map((payment) => (
@@ -422,19 +602,19 @@ export const DashboardPage = () => {
                   className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-900/50 rounded"
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                       {payment.name.charAt(0)}
                     </div>
                     <div>
-                      <span className="text-xs font-medium text-gray-800 dark:text-white block">
+                      <span className="text-sm font-medium text-gray-800 dark:text-white block">
                         {payment.name}
                       </span>
-                      <span className="text-xs text-green-600 dark:text-green-400 font-bold">
+                      <span className="text-sm text-green-600 dark:text-green-400 font-bold">
                         GH₵ {payment.amount?.toLocaleString()}
                       </span>
                     </div>
                   </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
                     {new Date(payment.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
@@ -443,7 +623,7 @@ export const DashboardPage = () => {
             <div className="mt-4 text-center">
               <Link
                 to="/payments"
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-medium"
+                className="text-base text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 font-medium"
               >
                 View More Payments →
               </Link>
@@ -452,87 +632,39 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <Link
-          to="/register"
-          className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <UserPlus className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-gray-800 dark:text-white">Register Student</span>
+      <div id="system" className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700 scroll-mt-32">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center shadow-lg">
+            <Activity className="w-5 h-5 text-white" />
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Add new student to system</p>
-        </Link>
-
-        <Link
-          to="/students"
-          className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <Eye className="w-4 h-4 text-green-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-gray-800 dark:text-white">View Students</span>
-          </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Browse all registered students</p>
-        </Link>
-
-        <Link
-          to="/payments"
-          className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-gray-800 dark:text-white">Manage Payments</span>
-          </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Track payment records</p>
-        </Link>
-
-        <Link
-          to="/users"
-          className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all group"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
-            <span className="text-xs font-semibold text-gray-800 dark:text-white">User Management</span>
-          </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Manage system users</p>
-        </Link>
-      </div>
-
-
-
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
-            <Activity className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white">
             System Notifications
           </h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-sm font-medium text-green-800 dark:text-green-300">System Status</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="bg-transparent rounded-xl p-5 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg transition-all duration-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-bold text-gray-700 dark:text-gray-300">System Status</span>
             </div>
-            <p className="text-2xl font-bold text-green-900 dark:text-green-100">Operational</p>
-            <p className="text-xs text-green-600 dark:text-green-400">All systems running</p>
+            <p className="text-3xl font-extrabold text-gray-800 dark:text-white mb-1">Operational</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">All systems running smoothly</p>
           </div>
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <span className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Maintenance</span>
+          <div className="bg-transparent rounded-xl p-5 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg transition-all duration-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-4 h-4 bg-amber-500 rounded-full"></div>
+              <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Maintenance</span>
             </div>
-            <p className="text-2xl font-bold text-yellow-900 dark:text-yellow-100">Sunday</p>
-            <p className="text-xs text-yellow-600 dark:text-yellow-400">2:00 AM scheduled</p>
+            <p className="text-3xl font-extrabold text-gray-800 dark:text-white mb-1">Sunday</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Scheduled at 2:00 AM</p>
           </div>
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span className="text-sm font-medium text-blue-800 dark:text-blue-300">Updates</span>
+          <div className="bg-transparent rounded-xl p-5 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-lg transition-all duration-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+              <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Updates</span>
             </div>
-            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">Available</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">New features ready</p>
+            <p className="text-3xl font-extrabold text-gray-800 dark:text-white mb-1">Available</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">New features ready</p>
           </div>
         </div>
       </div>

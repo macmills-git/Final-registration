@@ -1,231 +1,257 @@
 import {
   Users, DollarSign, TrendingUp, Activity,
-  UserPlus, FileText, ArrowRight
+  UserPlus, FileText, ArrowRight, Shield, Zap, BarChart3, CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useEffect, useRef, useState } from 'react';
+import ugTowerImage from '../assets/images/ug.png';
 
 export const HomePage = () => {
-  const { profile } = useAuth();
+  const [isVisible, setIsVisible] = useState(false);
+  const [isWhyChooseVisible, setIsWhyChooseVisible] = useState(false);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const whyChooseRef = useRef<HTMLDivElement>(null);
 
-  // Define all quick actions with role permissions
-  const allQuickActions = [
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    const whyChooseObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsWhyChooseVisible(true);
+        }
+      },
+      { threshold: 0.6 }
+    );
+
+    if (featuresRef.current) {
+      observer.observe(featuresRef.current);
+    }
+
+    if (whyChooseRef.current) {
+      whyChooseObserver.observe(whyChooseRef.current);
+    }
+
+    return () => {
+      if (featuresRef.current) {
+        observer.unobserve(featuresRef.current);
+      }
+      if (whyChooseRef.current) {
+        whyChooseObserver.unobserve(whyChooseRef.current);
+      }
+    };
+  }, []);
+
+  const features = [
     {
-      title: 'Register Student',
-      description: 'Onboard new students',
+      title: 'Student Registration',
+      description: 'Seamlessly onboard new students with our intuitive registration system',
       icon: UserPlus,
-      link: '/register',
       color: 'from-blue-500 to-cyan-500',
-      roles: ['admin', 'clerk']
+      link: '/register'
     },
     {
-      title: 'View Students',
-      description: 'Browse all students',
+      title: 'Student Management',
+      description: 'Efficiently manage and track all student records in one place',
       icon: Users,
-      link: '/students',
       color: 'from-green-500 to-emerald-500',
-      roles: ['admin', 'clerk']
+      link: '/students'
     },
     {
-      title: 'Dashboard',
-      description: 'Analytics overview',
+      title: 'Analytics Dashboard',
+      description: 'Get real-time insights with comprehensive analytics and reports',
       icon: TrendingUp,
-      link: '/dashboard',
-      color: 'from-orange-500 to-red-500',
-      roles: ['admin']
+      color: 'from-cyan-500 to-teal-500',
+      link: '/dashboard'
     },
     {
-      title: 'Payments',
-      description: 'Manage payments',
+      title: 'Payment Tracking',
+      description: 'Monitor and manage student payments with ease',
       icon: DollarSign,
-      link: '/payments',
-      color: 'from-purple-500 to-pink-500',
-      roles: ['admin']
+      color: 'from-blue-600 to-indigo-600',
+      link: '/payments'
     },
   ];
 
-  // Show all quick actions for both admin and clerk users
-  const quickActions = allQuickActions.map(action => ({
-    title: action.title,
-    description: action.description,
-    icon: action.icon,
-    link: action.link,
-    color: action.color,
-  }));
+  const benefits = [
+    { icon: Zap, text: 'Lightning-fast performance' },
+    { icon: Shield, text: 'Secure data management' },
+    { icon: BarChart3, text: 'Powerful analytics' },
+    { icon: Activity, text: 'Real-time updates' },
+  ];
 
   return (
-    <div className="space-y-10 pb-12 animate-fade-in">
-      <div className="bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-800 dark:to-cyan-800 rounded-xl p-7 text-white shadow-lg animate-fade-in">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold mb-2">
-              Welcome to Student Management!
-            </h1>
-            <p className="text-blue-100 text-base">
-              Ready to manage student registrations and records
+    <div className="animate-fade-in">
+      {/* HERO SECTION WITH BACKGROUND IMAGE */}
+      <div className="relative h-screen flex items-center justify-center overflow-hidden" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw', marginTop: '-10rem' }}>
+        {/* Background Image with Overlay */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: `url(${ugTowerImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+          {/* Blue Overlay with Color Accents */}
+          <div className="absolute inset-0 bg-black/50"></div>
+          <div className="absolute inset-0 bg-blue-950/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-700/20 via-blue-900/30 to-cyan-700/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-tl from-purple-500/5 via-transparent to-pink-500/5"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-20 text-center text-white px-6 max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight animate-fade-in-up text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.8)]">
+            COMPSSA
+          </h1>
+          <p className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-3 text-white animate-fade-in-up animation-delay-200 drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]">
+            Student Management System
+          </p>
+          <p className="text-base md:text-lg lg:text-xl text-blue-100 mb-12 leading-relaxed max-w-3xl mx-auto animate-fade-in-up animation-delay-300 drop-shadow-lg">
+            Empowering excellence through efficient student registration, tracking, and analytics.
+          </p>
+
+          <div className="flex flex-wrap md:flex-nowrap gap-4 mb-10 mt-14 justify-center animate-fade-in-up animation-delay-500">
+            {benefits.map((benefit, index) => {
+              const Icon = benefit.icon;
+              return (
+                <div key={index} className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 md:px-5 md:py-3 rounded-full border border-white/30 whitespace-nowrap">
+                  <Icon className="w-4 h-4 md:w-5 md:h-5" />
+                  <span className="text-sm md:text-base font-medium">{benefit.text}</span>
+                </div>
+              );
+            })}
+          </div>
+
+
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white/70 rounded-full mt-2 animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Rest of the content with proper spacing */}
+      <div className="relative bg-gray-50 dark:bg-gray-900 space-y-20 pt-20 pb-0">
+
+        {/* FEATURES SECTION */}
+        <div className="px-4 md:px-6 lg:px-8 pt-16 pb-0" ref={featuresRef}>
+          <div className={`text-center mb-20 transition-all duration-700 delay-[600ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
+            }`}>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6">
+              Powerful Features
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Everything you need for an effective manual registration
             </p>
           </div>
-          <div className="hidden md:block">
-            <Activity className="w-11 h-11 text-blue-200 opacity-50" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Link
+                  key={feature.title}
+                  to={feature.link}
+                  className={`group bg-transparent rounded-2xl p-6 transition-all duration-700 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                    }`}
+                  style={{ transitionDelay: `${index * 200}ms` }}
+                >
+                  <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
+                    <Icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-base text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  <div className="flex items-center text-blue-500 font-medium group-hover:gap-2 transition-all duration-300">
+                    <span>Learn more</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
+
+        {/* WHY CHOOSE US SECTION */}
+        <div className="p-12 md:p-16 py-16 md:py-20 -mt-11" ref={whyChooseRef}>
+          <div className={`text-center mb-16 transition-all duration-700 delay-[400ms] ${isWhyChooseVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-6">
+              Why Choose Our Platform?
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Built for modern educational institutions with cutting-edge technology
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className={`text-center transition-all duration-700 ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ transitionDelay: '800ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <CheckCircle2 className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Easy to Use</h3>
+              <p className="text-base text-gray-600 dark:text-gray-400">
+                Intuitive interface designed for users of all technical levels
+              </p>
+            </div>
+            <div className={`text-center transition-all duration-700 ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ transitionDelay: '800ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Secure & Reliable</h3>
+              <p className="text-base text-gray-600 dark:text-gray-400">
+                Enterprise-grade security to protect your sensitive data
+              </p>
+            </div>
+            <div className={`text-center transition-all duration-700 ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`} style={{ transitionDelay: '800ms' }}>
+              <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <Zap className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">Lightning Fast</h3>
+              <p className="text-base text-gray-600 dark:text-gray-400">
+                Optimized performance for seamless user experience
+              </p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <div>
-        <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-5">
-          Quick Actions
+      {/* CTA SECTION */}
+      <div className="bg-blue-600 dark:bg-blue-800 py-16 md:py-24 px-8 md:px-12 text-white text-center shadow-2xl mt-20" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw' }}>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">
+          Ready to Get Started?
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {quickActions.map((action, index) => {
-            const Icon = action.icon;
-            return (
-              <Link
-                key={action.title}
-                to={action.link}
-                className={`group bg-white dark:bg-gray-800 rounded-xl p-5 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:scale-105 hover:-translate-y-1 animate-zoom-in animation-delay-${index * 100}`}
-              >
-                <div className={`w-11 h-11 bg-gradient-to-br ${action.color} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 animate-bounce-in animation-delay-${index * 200}`}>
-                  <Icon className="w-6 h-6 text-white group-hover:animate-wiggle" />
-                </div>
-                <h3 className="text-base font-semibold text-gray-800 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {action.title}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  {action.description}
-                </p>
-                <div className="flex items-center text-blue-500 text-xs font-medium group-hover:gap-2 transition-all duration-300">
-                  <span>Go</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 group-hover:scale-125 transition-all duration-300" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-md border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-              <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <h3 className="text-base font-semibold text-gray-800 dark:text-white">
-              System Overview
-            </h3>
-          </div>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Mode</span>
-              <span className="text-sm font-semibold text-gray-800 dark:text-white">
-                Demo Mode
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Access Level</span>
-              <span className="text-sm font-semibold text-gray-800 dark:text-white">
-                Full Access
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Version</span>
-              <span className="text-sm font-semibold text-gray-800 dark:text-white">
-                v2.1.0
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-2">
-              <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
-              <span className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-semibold text-green-600 dark:text-green-400">
-                  Active
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-5 shadow-md border border-gray-200 dark:border-gray-600">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-              <Activity className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <h3 className="text-base font-semibold text-gray-800 dark:text-white">
-              Getting Started
-            </h3>
-          </div>
-          <ul className="space-y-3">
-            <li className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                1
-              </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Navigate to Register to onboard new students to the system
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                2
-              </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                View and manage all registered students in the Students page
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                3
-              </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Access Dashboard for detailed analytics and comprehensive reports
-              </span>
-            </li>
-            <li className="flex items-start gap-3">
-              <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
-                4
-              </div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Track payments and financial records for all students
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-
-
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-md border border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-2 mb-5">
-          <div className="w-7 h-7 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-            <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-            Need Help?
-          </h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
-            <div className="flex items-center gap-2 mb-2">
-              <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span className="text-sm font-medium text-purple-800 dark:text-purple-300">Documentation</span>
-            </div>
-            <p className="text-xl font-bold text-purple-900 dark:text-purple-100">Available</p>
-            <p className="text-xs text-purple-600 dark:text-purple-400">Comprehensive guides</p>
-          </div>
-          <div className="bg-pink-50 dark:bg-pink-900/20 rounded-lg p-4 border border-pink-200 dark:border-pink-800">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-              <span className="text-sm font-medium text-pink-800 dark:text-pink-300">Support Team</span>
-            </div>
-            <p className="text-xl font-bold text-pink-900 dark:text-pink-100">24/7</p>
-            <p className="text-xs text-pink-600 dark:text-pink-400">Always ready to help</p>
-          </div>
-          <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 border border-indigo-200 dark:border-indigo-800">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <span className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Quick Response</span>
-            </div>
-            <p className="text-xl font-bold text-indigo-900 dark:text-indigo-100">&lt; 2hrs</p>
-            <p className="text-xs text-indigo-600 dark:text-indigo-400">Average response time</p>
-          </div>
+        <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
+          Join thousands of institutions already using our platform to streamline their student management
+        </p>
+        <div className="flex flex-wrap justify-center gap-6">
+          <Link
+            to="/register"
+            className="group bg-white text-blue-600 px-6 py-3 rounded-full font-bold text-base hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center gap-2"
+          >
+            Register Student Now
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+          <Link
+            to="/students"
+            className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white px-6 py-3 rounded-full font-bold text-base hover:bg-white/20 transition-all duration-300 transform hover:scale-105"
+          >
+            View All Students
+          </Link>
         </div>
       </div>
     </div>

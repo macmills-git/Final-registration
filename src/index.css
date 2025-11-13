@@ -2,17 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: 'Roboto', sans-serif;
+    overflow-x: hidden;
+  }
+  
+  html {
+    overflow-x: hidden;
+  }
+}
+
 @layer utilities {
   .container {
     max-width: 1200px;
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-in;
+    animation: fadeIn 1s ease-in;
   }
 
   .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out;
+    animation: fadeInUp 1.2s ease-out;
   }
 
   .animate-slide-in {
@@ -36,11 +47,11 @@
   }
 
   .animate-slide-left {
-    animation: slideLeft 0.6s ease-out;
+    animation: slideLeft 1s ease-out;
   }
 
   .animate-slide-right {
-    animation: slideRight 0.6s ease-out;
+    animation: slideRight 1s ease-out;
   }
 
   .animate-zoom-in {
@@ -61,6 +72,10 @@
 
   .animate-wiggle {
     animation: wiggle 1s ease-in-out infinite;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.5s ease-out;
   }
 
   .animation-delay-100 {
@@ -269,5 +284,20 @@
   }
   40%, 100% {
     transform: rotateZ(0);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.95);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scaleX(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
   }
 }

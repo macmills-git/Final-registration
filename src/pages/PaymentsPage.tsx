@@ -120,16 +120,16 @@ export const PaymentsPage = () => {
     <div className="space-y-6 animate-fade-in pb-12">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Payments</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Payments</h1>
+          <p className="text-base text-gray-600 dark:text-gray-400">
             Track and manage payment records
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-md"
+          className="flex items-center gap-2 px-4 py-2.5 text-base bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-md"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           Add Payment
         </button>
       </div>
@@ -138,99 +138,103 @@ export const PaymentsPage = () => {
 
       <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2 mb-4">
-          <div className="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded flex items-center justify-center">
-            <DollarSign className="w-3 h-3 text-green-600 dark:text-green-400" />
+          <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded flex items-center justify-center">
+            <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
           </div>
-          <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
             Payment Overview
           </h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded p-3 border border-blue-200 dark:border-blue-800">
+          <div className="bg-white dark:bg-gray-800 rounded p-3 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-600 hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center gap-1 mb-1">
-              <DollarSign className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-              <span className="text-xs font-medium text-blue-800 dark:text-blue-300">Total Amount</span>
+              <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <span className="text-lg font-medium text-gray-800 dark:text-gray-300">Total Amount</span>
             </div>
-            <p className="text-lg font-bold text-blue-900 dark:text-blue-100">GH₵ {totalAmount.toLocaleString()}</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">All payments received</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">GH₵ {totalAmount.toLocaleString()}</p>
+            <p className="text-base text-gray-600 dark:text-gray-400">All payments received</p>
           </div>
-          <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
+          <div className="bg-white dark:bg-gray-800 rounded p-3 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-600 hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center gap-1 mb-1">
-              <CreditCard className="w-3 h-3 text-green-600 dark:text-green-400" />
-              <span className="text-xs font-medium text-green-800 dark:text-green-300">Cash Payments</span>
+              <CreditCard className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <span className="text-lg font-medium text-gray-800 dark:text-gray-300">Cash Payments</span>
             </div>
-            <p className="text-lg font-bold text-green-900 dark:text-green-100">GH₵ {totalCash.toLocaleString()}</p>
-            <p className="text-xs text-green-600 dark:text-green-400">Physical cash received</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">GH₵ {totalCash.toLocaleString()}</p>
+            <p className="text-base text-gray-600 dark:text-gray-400">Physical cash received</p>
           </div>
-          <div className="bg-orange-50 dark:bg-orange-900/20 rounded p-3 border border-orange-200 dark:border-orange-800">
+          <div className="bg-white dark:bg-gray-800 rounded p-3 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg hover:border-blue-500 dark:hover:border-blue-600 hover:scale-105 transition-all duration-300 cursor-pointer">
             <div className="flex items-center gap-1 mb-1">
-              <Smartphone className="w-3 h-3 text-orange-600 dark:text-orange-400" />
-              <span className="text-xs font-medium text-orange-800 dark:text-orange-300">MoMo Payments</span>
+              <Smartphone className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <span className="text-lg font-medium text-gray-800 dark:text-gray-300">MoMo Payments</span>
             </div>
-            <p className="text-lg font-bold text-orange-900 dark:text-orange-100">GH₵ {totalMomo.toLocaleString()}</p>
-            <p className="text-xs text-orange-600 dark:text-orange-400">Mobile money transfers</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">GH₵ {totalMomo.toLocaleString()}</p>
+            <p className="text-base text-gray-600 dark:text-gray-400">Mobile money transfers</p>
           </div>
         </div>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-        <h2 className="text-sm font-bold text-gray-800 dark:text-white mb-4">
-          Revenue by User / Clerk
-        </h2>
-        <div className="space-y-2">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">
+            Revenue by User / Clerk
+          </h2>
+          <span className="text-base text-gray-500 dark:text-gray-400">
+            {userRevenue.length} Clerks
+          </span>
+        </div>
+        <div className="space-y-3">
           {userRevenue.map((user, index) => (
             <div
               key={user.user_id}
-              className={`flex justify-between items-center p-2 rounded ${index === 0
-                ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
-                : 'bg-gray-50 dark:bg-gray-900/50'
-                }`}
+              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-900 transition-all"
             >
-              <span className={`text-xs font-medium ${index === 0
-                ? 'text-blue-600 dark:text-blue-400'
-                : 'text-gray-600 dark:text-gray-400'
-                }`}>
-                {user.full_name}
-              </span>
-              <span className={`text-xs font-bold ${index === 0
-                ? 'text-blue-800 dark:text-blue-200'
-                : 'text-gray-800 dark:text-white'
-                }`}>
-                GH₵ {user.totalRevenue.toLocaleString()}
-              </span>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  {user.full_name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-gray-800 dark:text-white">
+                    {user.full_name}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Clerk #{index + 1}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xl font-bold text-gray-800 dark:text-white">
+                  GH₵ {user.totalRevenue.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Total Revenue
+                </p>
+              </div>
             </div>
           ))}
-          <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-3 h-3 text-green-600 dark:text-green-400" />
-              <span className="text-xs font-medium text-green-800 dark:text-green-300">
-                Top performer this month
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-          <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Payment Methods Distribution</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-              <span className="text-xs text-blue-600 dark:text-blue-400">Cash Payments</span>
-              <span className="text-xs font-bold text-blue-800 dark:text-blue-200">45%</span>
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3">Payment Methods Distribution</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+              <span className="text-base text-blue-600 dark:text-blue-400">Cash Payments</span>
+              <span className="text-base font-bold text-blue-800 dark:text-blue-200">45%</span>
             </div>
-            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/50 rounded">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Mobile Money</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-white">35%</span>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded">
+              <span className="text-base text-gray-600 dark:text-gray-400">Mobile Money</span>
+              <span className="text-base font-bold text-gray-800 dark:text-white">35%</span>
             </div>
-            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/50 rounded">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Bank Transfer</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-white">20%</span>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded">
+              <span className="text-base text-gray-600 dark:text-gray-400">Bank Transfer</span>
+              <span className="text-base font-bold text-gray-800 dark:text-white">20%</span>
             </div>
-            <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-1">
-                <CreditCard className="w-3 h-3 text-green-600 dark:text-green-400" />
-                <span className="text-xs font-medium text-green-800 dark:text-green-300">
+            <div className="mt-2 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <span className="text-base font-medium text-green-800 dark:text-green-300">
                   Most popular payment method
                 </span>
               </div>
@@ -239,26 +243,81 @@ export const PaymentsPage = () => {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-          <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Daily Trends</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/50 rounded">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Monday (Mar 18)</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-white">GH₵ 450</span>
+          <div className="flex items-center justify-center gap-8">
+            <div className="relative w-64 h-64">
+              <svg viewBox="0 0 100 100" className="transform -rotate-90 animate-spin" style={{ animationDuration: '4s' }}>
+                {/* Cash - 45% */}
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#6B7280"
+                  strokeWidth="20"
+                  strokeDasharray="113 138"
+                  strokeDashoffset="0"
+                  className="transition-all duration-300 hover:stroke-opacity-80"
+                />
+                {/* Mobile Money - 35% */}
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#059669"
+                  strokeWidth="20"
+                  strokeDasharray="88 163"
+                  strokeDashoffset="-113"
+                  className="transition-all duration-300 hover:stroke-opacity-80"
+                />
+                {/* Bank Transfer - 20% */}
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#D97706"
+                  strokeWidth="20"
+                  strokeDasharray="50 201"
+                  strokeDashoffset="-201"
+                  className="transition-all duration-300 hover:stroke-opacity-80"
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-gray-800 dark:text-white">100%</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Total</p>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/50 rounded">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Tuesday (Mar 19)</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-white">GH₵ 680</span>
-            </div>
-            <div className="flex justify-between items-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-              <span className="text-xs text-blue-600 dark:text-blue-400">Wednesday (Mar 20) Today</span>
-              <span className="text-xs font-bold text-blue-800 dark:text-blue-200">GH₵ 820</span>
-            </div>
-            <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-1">
-                <TrendingUp className="w-3 h-3 text-green-600 dark:text-green-400" />
-                <span className="text-xs font-medium text-green-800 dark:text-green-300">
-                  20% increase from yesterday
-                </span>
+
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                  <CreditCard className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-gray-800 dark:text-white">Cash Payments</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">45%</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+                  <Smartphone className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-gray-800 dark:text-white">Mobile Money</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">35%</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                  <p className="text-base font-medium text-gray-800 dark:text-white">Bank Transfer</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">20%</p>
+                </div>
               </div>
             </div>
           </div>
@@ -267,8 +326,8 @@ export const PaymentsPage = () => {
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-bold text-gray-800 dark:text-white">Recent Payments</h2>
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">Recent Payments</h2>
+          <span className="text-base text-gray-500 dark:text-gray-400">
             Showing {showAllPayments ? payments.length : Math.min(5, payments.length)} of {payments.length} payments
           </span>
         </div>
@@ -276,19 +335,19 @@ export const PaymentsPage = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700">
-                <th className="text-left py-2 px-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <th className="text-left py-3 px-3 text-base font-semibold text-gray-700 dark:text-gray-300">
                   Student
                 </th>
-                <th className="text-left py-2 px-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <th className="text-left py-3 px-3 text-base font-semibold text-gray-700 dark:text-gray-300">
                   Amount
                 </th>
-                <th className="text-left py-2 px-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <th className="text-left py-3 px-3 text-base font-semibold text-gray-700 dark:text-gray-300">
                   Method
                 </th>
-                <th className="text-left py-2 px-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <th className="text-left py-3 px-3 text-base font-semibold text-gray-700 dark:text-gray-300">
                   Reference
                 </th>
-                <th className="text-left py-2 px-2 text-xs font-semibold text-gray-700 dark:text-gray-300">
+                <th className="text-left py-3 px-3 text-base font-semibold text-gray-700 dark:text-gray-300">
                   Date
                 </th>
               </tr>
@@ -300,21 +359,21 @@ export const PaymentsPage = () => {
                   className={`border-b border-gray-100 dark:border-gray-700 ${index % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900/30' : ''
                     }`}
                 >
-                  <td className="py-2 px-2 text-xs text-gray-800 dark:text-white">
+                  <td className="py-3 px-3 text-base text-gray-800 dark:text-white">
                     {payment.student_name}
                   </td>
-                  <td className="py-2 px-2 text-xs text-green-600 dark:text-green-400 font-bold">
+                  <td className="py-3 px-3 text-base text-green-600 dark:text-green-400 font-bold">
                     GH₵ {Number(payment.amount).toLocaleString()}
                   </td>
-                  <td className="py-2 px-2">
-                    <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-xs capitalize">
+                  <td className="py-3 px-3">
+                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm capitalize">
                       {payment.payment_method}
                     </span>
                   </td>
-                  <td className="py-2 px-2 text-xs text-gray-600 dark:text-gray-400">
+                  <td className="py-3 px-3 text-base text-gray-600 dark:text-gray-400">
                     {payment.reference_id}
                   </td>
-                  <td className="py-2 px-2 text-xs text-gray-600 dark:text-gray-400">
+                  <td className="py-3 px-3 text-base text-gray-600 dark:text-gray-400">
                     {new Date(payment.created_at).toLocaleDateString()}
                   </td>
                 </tr>
@@ -462,62 +521,52 @@ export const PaymentsPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-          <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Payment Methods Distribution</h3>
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3">Daily Trends</h3>
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded">
+              <span className="text-base text-gray-600 dark:text-gray-400">Monday (Mar 18)</span>
+              <span className="text-base font-bold text-gray-800 dark:text-white">GH₵ 450</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded">
+              <span className="text-base text-gray-600 dark:text-gray-400">Tuesday (Mar 19)</span>
+              <span className="text-base font-bold text-gray-800 dark:text-white">GH₵ 680</span>
+            </div>
+            <div className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+              <span className="text-base text-blue-600 dark:text-blue-400">Wednesday (Mar 20) Today</span>
+              <span className="text-base font-bold text-blue-800 dark:text-blue-200">GH₵ 820</span>
+            </div>
+            <div className="mt-2 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Cash Payments</span>
+                <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <span className="text-base font-medium text-green-800 dark:text-green-300">
+                  20% increase from yesterday
+                </span>
               </div>
-              <span className="text-xs font-semibold text-gray-800 dark:text-white">45%</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: '45%' }}></div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Mobile Money</span>
-              </div>
-              <span className="text-xs font-semibold text-gray-800 dark:text-white">35%</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '35%' }}></div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-orange-500 rounded"></div>
-                <span className="text-xs text-gray-700 dark:text-gray-300">Bank Transfer</span>
-              </div>
-              <span className="text-xs font-semibold text-gray-800 dark:text-white">20%</span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div className="bg-orange-500 h-1.5 rounded-full" style={{ width: '20%' }}></div>
             </div>
           </div>
         </div>
 
+
+
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-          <h3 className="text-sm font-bold text-gray-800 dark:text-white mb-3">Weekly Trends</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/50 rounded">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Week 1 (Mar 1-7)</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-white">GH₵ 2,150</span>
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3">Weekly Trends</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded">
+              <span className="text-base text-gray-600 dark:text-gray-400">Week 1 (Mar 1-7)</span>
+              <span className="text-base font-bold text-gray-800 dark:text-white">GH₵ 2,150</span>
             </div>
-            <div className="flex justify-between items-center p-2 bg-gray-50 dark:bg-gray-900/50 rounded">
-              <span className="text-xs text-gray-600 dark:text-gray-400">Week 2 (Mar 8-14)</span>
-              <span className="text-xs font-bold text-gray-800 dark:text-white">GH₵ 2,890</span>
+            <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900/50 rounded">
+              <span className="text-base text-gray-600 dark:text-gray-400">Week 2 (Mar 8-14)</span>
+              <span className="text-base font-bold text-gray-800 dark:text-white">GH₵ 2,890</span>
             </div>
-            <div className="flex justify-between items-center p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
-              <span className="text-xs text-blue-600 dark:text-blue-400">Week 3 (Mar 15-21) Current</span>
-              <span className="text-xs font-bold text-blue-800 dark:text-blue-200">GH₵ 3,410</span>
+            <div className="flex justify-between items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+              <span className="text-base text-blue-600 dark:text-blue-400">Week 3 (Mar 15-21) Current</span>
+              <span className="text-base font-bold text-blue-800 dark:text-blue-200">GH₵ 3,410</span>
             </div>
-            <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-1">
-                <TrendingUp className="w-3 h-3 text-green-600 dark:text-green-400" />
-                <span className="text-xs font-medium text-green-800 dark:text-green-300">
+            <div className="mt-2 p-3 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <span className="text-base font-medium text-green-800 dark:text-green-300">
                   18% increase from last week
                 </span>
               </div>

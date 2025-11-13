@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { Layout } from './components/Layout';
+import { SidebarLayout } from './components/SidebarLayout';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ScrollToTop } from './components/ScrollToTop';
 import { LoginPage } from './pages/LoginPage';
@@ -47,9 +48,9 @@ function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute requireAdmin={true}>
-                  <Layout>
+                  <SidebarLayout>
                     <DashboardPage />
-                  </Layout>
+                  </SidebarLayout>
                 </ProtectedRoute>
               }
             />
@@ -57,9 +58,9 @@ function App() {
               path="/students"
               element={
                 <ProtectedRoute>
-                  <Layout>
+                  <SidebarLayout>
                     <StudentsPage />
-                  </Layout>
+                  </SidebarLayout>
                 </ProtectedRoute>
               }
             />
@@ -67,9 +68,9 @@ function App() {
               path="/payments"
               element={
                 <ProtectedRoute requireAdmin={true}>
-                  <Layout>
+                  <SidebarLayout>
                     <PaymentsPage />
-                  </Layout>
+                  </SidebarLayout>
                 </ProtectedRoute>
               }
             />
@@ -77,9 +78,9 @@ function App() {
               path="/users"
               element={
                 <ProtectedRoute requireAdmin={true}>
-                  <Layout>
+                  <SidebarLayout>
                     <UsersPage />
-                  </Layout>
+                  </SidebarLayout>
                 </ProtectedRoute>
               }
             />

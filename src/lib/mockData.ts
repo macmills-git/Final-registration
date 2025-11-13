@@ -289,6 +289,36 @@ export const mockUsers: User[] = [
     is_active: true,
     created_at: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
     updated_at: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: '3',
+    username: 'superadmin',
+    full_name: 'Sarah Johnson',
+    role: 'admin',
+    permissions: {},
+    is_active: true,
+    created_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: '4',
+    username: 'clerk2',
+    full_name: 'Michael Brown',
+    role: 'clerk',
+    permissions: {},
+    is_active: true,
+    created_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString()
+  },
+  {
+    id: '5',
+    username: 'clerk3',
+    full_name: 'Emily Davis',
+    role: 'clerk',
+    permissions: {},
+    is_active: true,
+    created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
   }
 ];
 

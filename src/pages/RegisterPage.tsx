@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { ArrowLeft, ArrowRight, Check, User, GraduationCap, DollarSign, FileText, Activity, Phone, Mail, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, User, GraduationCap, DollarSign, FileText, Activity, Phone, Mail, CreditCard, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { mockStudents, mockPayments, Student, Payment } from '../lib/mockData';
 
@@ -31,6 +31,9 @@ export const RegisterPage = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [registeredStudentName, setRegisteredStudentName] = useState('');
+  const [registeredStudentId, setRegisteredStudentId] = useState('');
 
   const [personalDetails, setPersonalDetails] = useState<PersonalDetails>({
     name: '',
@@ -133,10 +136,10 @@ export const RegisterPage = () => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Show success message
-      alert(`Student ${personalDetails.name} registered successfully!`);
-
-      navigate('/students');
+      // Show success modal
+      setRegisteredStudentName(personalDetails.name);
+      setRegisteredStudentId(personalDetails.student_id);
+      setShowSuccessModal(true);
     } catch (err: any) {
       setError(err.message || 'Failed to register student');
     } finally {
@@ -200,20 +203,12 @@ export const RegisterPage = () => {
                 </div>
                 <div className="mt-3 text-center">
                   <span
-                    className={`block text-sm font-semibold ${isAccessible
+                    className={`block text-lg font-semibold ${isAccessible
                       ? 'text-gray-800 dark:text-white'
                       : 'text-gray-500 dark:text-gray-400'
                       }`}
                   >
                     {item.label}
-                  </span>
-                  <span
-                    className={`block text-xs mt-1 ${isAccessible
-                      ? 'text-gray-600 dark:text-gray-300'
-                      : 'text-gray-400 dark:text-gray-500'
-                      }`}
-                  >
-                    {item.desc}
                   </span>
                 </div>
               </div>
@@ -226,28 +221,7 @@ export const RegisterPage = () => {
       <form onSubmit={handleSubmit}>
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
 
-          {/* Step Header */}
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 px-4 py-3 border-b border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center">
-                {step === 1 && <User className="w-3 h-3 text-white" />}
-                {step === 2 && <GraduationCap className="w-3 h-3 text-white" />}
-                {step === 3 && <DollarSign className="w-3 h-3 text-white" />}
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-800 dark:text-white">
-                  {step === 1 && 'Personal Details'}
-                  {step === 2 && 'Academic Information'}
-                  {step === 3 && 'Payment Information'}
-                </h2>
-                <p className="text-xs text-gray-600 dark:text-gray-300">
-                  {step === 1 && 'Enter the student\'s personal information'}
-                  {step === 2 && 'Select course and academic preferences'}
-                  {step === 3 && 'Provide payment and financial details'}
-                </p>
-              </div>
-            </div>
-          </div>
+
 
           {/* Form Content - Show Only Current Step */}
           <div className="p-4">
@@ -256,7 +230,7 @@ export const RegisterPage = () => {
             {step === 1 && (
               <div className="space-y-4 animate-slide-in">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="flex items-center gap-1 text-base font-medium text-gray-700 dark:text-gray-300">
                     <User className="w-3 h-3" />
                     Full Name *
                   </label>
@@ -266,14 +240,14 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setPersonalDetails({ ...personalDetails, name: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
                     placeholder="Enter student's full name"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="flex items-center gap-1 text-base font-medium text-gray-700 dark:text-gray-300">
                     <CreditCard className="w-3 h-3" />
                     Student ID *
                   </label>
@@ -283,14 +257,14 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setPersonalDetails({ ...personalDetails, student_id: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
                     placeholder="e.g., 11*****8"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="flex items-center gap-1 text-base font-medium text-gray-700 dark:text-gray-300">
                     <Mail className="w-3 h-3" />
                     Student Email *
                   </label>
@@ -305,18 +279,18 @@ export const RegisterPage = () => {
                           email: username + '@st.ug.edu.gh'
                         });
                       }}
-                      className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                      className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
                       placeholder="Enter username"
                       required
                     />
                     {personalDetails.email.replace('@st.ug.edu.gh', '') && (
-                      <div className="absolute inset-0 px-3 py-2.5 text-sm pointer-events-none flex items-center">
+                      <div className="absolute inset-0 px-3 py-2.5 text-base pointer-events-none flex items-center">
                         <span className="invisible">{personalDetails.email.replace('@st.ug.edu.gh', '')}</span>
                         <span className="text-gray-500 dark:text-gray-400">@st.ug.edu.gh</span>
                       </div>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-base text-gray-500 dark:text-gray-400">
                     Full email: <span className="font-medium text-blue-600 dark:text-blue-400">
                       {personalDetails.email || 'username@st.ug.edu.gh'}
                     </span>
@@ -324,7 +298,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Gender *
                   </label>
                   <select
@@ -332,7 +306,7 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setPersonalDetails({ ...personalDetails, gender: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="">Select Gender</option>
@@ -343,7 +317,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Nationality *
                   </label>
                   <select
@@ -351,7 +325,7 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setPersonalDetails({ ...personalDetails, nationality: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="">Select Nationality</option>
@@ -364,7 +338,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="flex items-center gap-1 text-base font-medium text-gray-700 dark:text-gray-300">
                     <Phone className="w-3 h-3" />
                     Phone Number *
                   </label>
@@ -374,7 +348,7 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setPersonalDetails({ ...personalDetails, phone_number: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
                     placeholder="+233 XX XXX XXXX"
                     required
                   />
@@ -386,7 +360,7 @@ export const RegisterPage = () => {
             {step === 2 && (
               <div className="space-y-4 animate-slide-in">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="flex items-center gap-1 text-base font-medium text-gray-700 dark:text-gray-300">
                     <GraduationCap className="w-3 h-3" />
                     Course *
                   </label>
@@ -395,7 +369,7 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setAcademicDetails({ ...academicDetails, course: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="">Select Course</option>
@@ -408,7 +382,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Academic Level *
                   </label>
                   <select
@@ -416,7 +390,7 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setAcademicDetails({ ...academicDetails, level: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="">Select Level</option>
@@ -429,7 +403,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Study Mode *
                   </label>
                   <select
@@ -440,7 +414,7 @@ export const RegisterPage = () => {
                         study_mode: e.target.value as any,
                       })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="regular">Regular</option>
@@ -450,7 +424,7 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Residential Status *
                   </label>
                   <select
@@ -461,7 +435,7 @@ export const RegisterPage = () => {
                         residential_status: e.target.value as any,
                       })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="resident">Resident</option>
@@ -475,7 +449,7 @@ export const RegisterPage = () => {
             {step === 3 && (
               <div className="space-y-4 animate-slide-in">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="flex items-center gap-1 text-base font-medium text-gray-700 dark:text-gray-300">
                     <DollarSign className="w-3 h-3" />
                     Amount (GHS) *
                   </label>
@@ -486,14 +460,14 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setFinancialDetails({ ...financialDetails, amount: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
                     placeholder="0.00"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Reference ID *
                   </label>
                   <input
@@ -502,14 +476,14 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setFinancialDetails({ ...financialDetails, reference_id: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
                     placeholder="Payment reference number"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
                     Payment Method *
                   </label>
                   <select
@@ -520,7 +494,7 @@ export const RegisterPage = () => {
                         payment_method: e.target.value as any,
                       })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     required
                   >
                     <option value="cash">Cash Payment</option>
@@ -530,8 +504,8 @@ export const RegisterPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Operator {financialDetails.payment_method === 'momo' && '(Required)'}
+                  <label className="block text-base font-medium text-gray-700 dark:text-gray-300">
+                    Clerk Name {financialDetails.payment_method === 'momo' && '(Required)'}
                   </label>
                   <input
                     type="text"
@@ -539,15 +513,15 @@ export const RegisterPage = () => {
                     onChange={(e) =>
                       setFinancialDetails({ ...financialDetails, operator: e.target.value })
                     }
-                    className="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
-                    placeholder="e.g., MTN, Vodafone, AirtelTigo"
+                    className="w-full px-3 py-2.5 text-base bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400"
+                    placeholder="Clerk name"
                   />
                 </div>
               </div>
             )}
 
             {error && (
-              <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-sm text-red-600 dark:text-red-400">
+              <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-base text-red-600 dark:text-red-400">
                 {error}
               </div>
             )}
@@ -558,7 +532,7 @@ export const RegisterPage = () => {
                 <button
                   type="button"
                   onClick={handlePrevious}
-                  className="flex items-center gap-1 px-4 py-2 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-all font-medium"
+                  className="flex items-center gap-1 px-4 py-2 text-base bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-all font-medium"
                 >
                   <ArrowLeft className="w-3 h-3" />
                   Previous
@@ -567,7 +541,7 @@ export const RegisterPage = () => {
                 <div></div>
               )}
 
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2 text-base text-gray-500 dark:text-gray-400">
                 Step {step} of 3
               </div>
 
@@ -576,7 +550,7 @@ export const RegisterPage = () => {
                   type="button"
                   onClick={handleNext}
                   disabled={!isStepValid()}
-                  className="flex items-center gap-1 px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg"
+                  className="flex items-center gap-1 px-4 py-2 text-base bg-blue-500 text-white rounded hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg"
                 >
                   Next
                   <ArrowRight className="w-3 h-3" />
@@ -585,7 +559,7 @@ export const RegisterPage = () => {
                 <button
                   type="submit"
                   disabled={loading || !isStepValid()}
-                  className="flex items-center gap-1 px-4 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg"
+                  className="flex items-center gap-1 px-4 py-2 text-base bg-green-500 text-white rounded hover:bg-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg"
                 >
                   {loading ? (
                     <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -600,45 +574,70 @@ export const RegisterPage = () => {
         </div>
       </form>
 
-      {/* Help Section */}
-      <div className="pt-14">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 bg-green-100 dark:bg-green-900/30 rounded flex items-center justify-center">
-              <User className="w-3 h-3 text-green-600 dark:text-green-400" />
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[10000] p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full animate-fade-in-up">
+            <div className="flex items-center justify-end p-4">
+              <button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setStep(1);
+                  setPersonalDetails({
+                    name: '',
+                    email: '',
+                    student_id: '',
+                    gender: '',
+                    nationality: '',
+                    phone_number: '',
+                  });
+                  setAcademicDetails({
+                    course: '',
+                    level: '',
+                    study_mode: 'regular',
+                    residential_status: 'resident',
+                  });
+                  setFinancialDetails({
+                    amount: '',
+                    reference_id: '',
+                    payment_method: 'cash',
+                    operator: '',
+                  });
+                }}
+                className="p-2 bg-red-500 hover:bg-red-600 rounded-full transition-all"
+              >
+                <X className="w-5 h-5 text-white" />
+              </button>
             </div>
-            <h3 className="text-sm font-semibold text-gray-800 dark:text-white">
-              Need Help with Registration?
-            </h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="bg-green-50 dark:bg-green-900/20 rounded p-3 border border-green-200 dark:border-green-800">
-              <div className="flex items-center gap-1 mb-1">
-                <User className="w-3 h-3 text-green-600 dark:text-green-400" />
-                <span className="text-xs font-medium text-green-800 dark:text-green-300">Support Team</span>
+            <div className="px-8 pb-8 pt-2 relative overflow-hidden">
+              {/* Minimal sparkles */}
+              <div className="absolute top-8 right-12 text-yellow-400 text-xl animate-pulse">✨</div>
+              <div className="absolute bottom-12 left-12 text-green-400 text-xl animate-pulse animation-delay-500">✨</div>
+
+              <div className="flex flex-col items-center text-center relative z-10">
+                {/* Checkmark with subtle glow */}
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-green-400 rounded-full blur-xl opacity-30"></div>
+                  <div className="relative w-24 h-24 bg-gradient-to-br from-green-400 to-green-500 rounded-full flex items-center justify-center shadow-xl">
+                    <Check className="w-12 h-12 text-white" strokeWidth={3} />
+                  </div>
+                </div>
+
+                {/* Main message */}
+                <p className="text-2xl text-white font-semibold mb-2">
+                  Student <span className="text-green-400">{registeredStudentId}</span>
+                </p>
+                <p className="text-xl text-gray-300 mb-6">
+                  Successfully Registered
+                </p>
+
+                {/* Happy emoji */}
+                <p className="text-3xl">🎉</p>
               </div>
-              <p className="text-lg font-bold text-green-900 dark:text-green-100">Ready</p>
-              <p className="text-xs text-green-600 dark:text-green-400">Here to assist you</p>
-            </div>
-            <div className="bg-teal-50 dark:bg-teal-900/20 rounded p-3 border border-teal-200 dark:border-teal-800">
-              <div className="flex items-center gap-1 mb-1">
-                <FileText className="w-3 h-3 text-teal-600 dark:text-teal-400" />
-                <span className="text-xs font-medium text-teal-800 dark:text-teal-300">FAQ Available</span>
-              </div>
-              <p className="text-lg font-bold text-teal-900 dark:text-teal-100">50+</p>
-              <p className="text-xs text-teal-600 dark:text-teal-400">Common questions</p>
-            </div>
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded p-3 border border-emerald-200 dark:border-emerald-800">
-              <div className="flex items-center gap-1 mb-1">
-                <Activity className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-xs font-medium text-emerald-800 dark:text-emerald-300">Quick Help</span>
-              </div>
-              <p className="text-lg font-bold text-emerald-900 dark:text-emerald-100">Instant</p>
-              <p className="text-xs text-emerald-600 dark:text-emerald-400">Get help now</p>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
