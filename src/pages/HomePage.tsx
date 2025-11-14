@@ -148,7 +148,7 @@ export const HomePage = () => {
 
         {/* FEATURES SECTION */}
         <div className="px-4 md:px-6 lg:px-8 pt-16 pb-0" ref={featuresRef}>
-          <div className={`text-center mb-12 md:mb-20 transition-all duration-200 delay-[150ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
+          <div className={`text-center mb-12 md:mb-20 transition-all duration-300 delay-[225ms] ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'
             }`}>
             <h2 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white mb-3 md:mb-6">
               Powerful Features
@@ -164,9 +164,9 @@ export const HomePage = () => {
                 <Link
                   key={feature.title}
                   to={feature.link}
-                  className={`group bg-transparent rounded-xl md:rounded-2xl p-4 md:p-6 transition-all duration-200 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  className={`group bg-transparent rounded-xl md:rounded-2xl p-4 md:p-6 transition-all duration-300 border-2 border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 hover:scale-105 hover:-translate-y-2 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                     }`}
-                  style={{ transitionDelay: `${index * 50}ms` }}
+                  style={{ transitionDelay: `${index * 75}ms` }}
                 >
                   <div className={`w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br ${feature.color} rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
                     <Icon className="w-5 h-5 md:w-7 md:h-7 text-white" />
@@ -189,7 +189,7 @@ export const HomePage = () => {
 
         {/* WHY CHOOSE US SECTION */}
         <div className="p-6 md:p-16 py-12 md:py-20 -mt-11" ref={whyChooseRef}>
-          <div className={`text-center mb-10 md:mb-16 transition-all duration-[400ms] delay-[200ms] ${isWhyChooseVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
+          <div className={`text-center mb-10 md:mb-16 transition-all duration-[600ms] delay-[300ms] ${isWhyChooseVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
             <h2 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white mb-3 md:mb-6">
               Why Choose Our Platform?
             </h2>
@@ -198,7 +198,7 @@ export const HomePage = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <div className={`text-center transition-all duration-[400ms] ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ transitionDelay: '400ms' }}>
+            <div className={`text-center transition-all duration-[600ms] ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ transitionDelay: '600ms' }}>
               <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-lg">
                 <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-white" />
               </div>
@@ -207,7 +207,7 @@ export const HomePage = () => {
                 Intuitive interface designed for users of all technical levels
               </p>
             </div>
-            <div className={`text-center transition-all duration-[400ms] ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ transitionDelay: '400ms' }}>
+            <div className={`text-center transition-all duration-[600ms] ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`} style={{ transitionDelay: '600ms' }}>
               <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-lg">
                 <Shield className="w-6 h-6 md:w-8 md:h-8 text-white" />
               </div>
@@ -216,7 +216,7 @@ export const HomePage = () => {
                 Enterprise-grade security to protect your sensitive data
               </p>
             </div>
-            <div className={`text-center transition-all duration-[400ms] ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`} style={{ transitionDelay: '400ms' }}>
+            <div className={`text-center transition-all duration-[600ms] ${isWhyChooseVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`} style={{ transitionDelay: '600ms' }}>
               <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-lg">
                 <Zap className="w-6 h-6 md:w-8 md:h-8 text-white" />
               </div>
